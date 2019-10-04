@@ -1,0 +1,114 @@
+import random
+
+
+def print_board(board):
+    print(board[0] + '|' + board[1] + '|' + board[2])
+    print(board[3] + '|' + board[4] + '|' + board[5])
+    print(board[6] + '|' + board[7] + '|' + board[8])
+
+
+def input_marker():
+    player1_marker = ''
+    player2_marker = ''
+    while player1_marker != 'X' and player1_marker != 'O':
+        player1_marker = input('Player1 choose "X" or "O"')
+    if player1_marker == 'X':
+        player2_marker = 'O'
+    else:
+        player2_marker2_marker = 'X'
+    return player1_marker, player2_marker
+
+
+def place_marker(board, marker, position):
+    board[position] = marker
+    return board
+
+
+def win_check(board, mark):
+    if ((board[0] == mark and board[1] == mark and board[2] == mark) or (
+            board[0] == mark and board[3] == mark and board[6] == mark) or
+            (board[0] == mark and board[4] == mark and board[8] == mark) or (
+                    board[3] == mark and board[4] == mark and board[5] == mark) or (
+                    board[6] == mark and board[7] == mark and board[8] == mark) or
+            (board[1] == mark and board[4] == mark and board[7] == mark) or (
+                    board[2] == mark and board[5] == mark and board[8] == mark) or
+            (board[2] == mark and board[4] == mark and board[6] == mark)):
+        return True
+
+
+def choose_first():
+    num = random.randint(0, 1)
+    if num == 0:
+        return 'player1'
+    else:
+        return 'player2'
+
+
+def space_check(board, position):
+    return board[position] == ' '
+
+
+def full_board_check(board):
+    for num in range(len(board)):
+        if space_check(board, num):
+            return False
+    else:
+        return True
+
+
+def player_choice(board):
+    post = ''
+    while (post not in [0,1, 2, 3, 4, 5, 6, 7, 8]) or not (space_check(board, post)):
+        post = int(input('ENTER POSITION'))
+    return post
+
+
+def replay():
+    st = input('Do you want to play?')
+    return st.lower() == 'yes'
+
+
+while True:
+    board = [' '] * 9
+    play = replay()
+    p1_marker, p2_marker = input_marker()
+    goes_now = choose_first()
+    print(goes_now + ' goes first')
+    if play:
+        on = True
+    else:
+        on = False
+    while on:
+        if goes_now == 'player1':
+            print_board(board)
+            position = player_choice(board)
+            board = place_marker(board, p1_marker, position)
+            if win_check(board, p1_marker):
+                print_board(board)
+                print('Player1 has won')
+                on = False
+            else:
+                if full_board_check(board):
+                    print_board(board)
+                    print("It's a tie")
+                    break
+                else:
+                    goes_now = 'player2'
+
+        else:
+            print_board(board)
+            position = player_choice(board)
+            board = place_marker(board, p2_marker, position)
+            if win_check(board, p2_marker):
+                print_board(board)
+                print('Player2 has won')
+                on = False
+            else:
+                if full_board_check(board):
+                    print_board(board)
+                    print("It's a tie")
+                    break
+                else:
+                    goes_now = 'player1'
+    if not replay():
+        break
